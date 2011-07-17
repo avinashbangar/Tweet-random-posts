@@ -1,4 +1,4 @@
-#Script to tweet about articles written on tutkiun
+#Script to tweet about articles 
 #Version 1.0 
 #Future addition :: 1. object oriented script, 2. should send email when something is not working
 
