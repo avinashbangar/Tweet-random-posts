@@ -1,6 +1,6 @@
 #Script to tweet about articles written on tutkiun
 #Version 1.0 
-#Future addition :: 1. object oriented script, 2. should send email when something is not working
+#Future addition :: 1. Should send email when something is not working
 
 import feedparser
 import twitter
@@ -8,36 +8,51 @@ import random
 import bitly
 
 
-d = feedparser.parse('YOUR SITE RSS FEED')
+class RandomTweet:
+    'Class for Posting Random Tweets from a blog post'
+    
+    def generate_tweet(self):
+    
+        feeds = feedparser.parse('SITE RSS FEED LINK')
+        # Get total number of posts
+        count = 0
 
-# Get total number of posts
-count = 0
-
-for feed in d.entries:
-	count = count + 1
+        for feed in feeds.entries:
+	        count = count + 1
 	
-# Get random post id
-id = random.randint(0,count)
+        # Get random post id
+        id = random.randint(0,count)
 
-#Call bitly api for shortening api
-api = bitly.Api(login = 'LOGIN', apikey = 'API KEY')
+        #Call bitly api for shortening api
+        api = bitly.Api(login = 'LOGIN', apikey = 'API KEY')
 
-#Shorten the url and save it to bitly account
-short_url = api.shorten(d.entries[id].link,{'history':1})
+        #Shorten the url and save it to bitly account
+        short_url = api.shorten(feeds.entries[id].link,{'history':1})
 
-# Create the tweet for posting to twitter account
-tweet = d.entries[id].title
-tweet += ' '
-tweet += short_url
-#tweet = '<Title> <Link>'
-#print tweet
+        # Create the tweet for posting to twitter account
+        tweet = feeds.entries[id].title
+        tweet += ' '
+        tweet += short_url
 
-# Call the twitter api
-api = twitter.Api()
+        #print tweet
 
-api = twitter.Api(consumer_key='a7znTIfGvUfDroKnCa7boQ',consumer_secret='drbSp9ufbZFC5xRqfofOsXaz3bCpWUXjHxOV1ou5nHY',access_token_key='127806337-uJ2sywW1Ypg3zkqMrK6JBK16rfCSpReH9SeuxaDH',access_token_secret='YohCKdw9s8WaYofhrQWBxLfhAC0RXsUJUbx8PekOEI')
+        return tweet
 
-#Post update to twitter
-status = api.PostUpdate(tweet)
+    def post_to_twitter(self,tweet):
+        # Call the twitter api
+        api = twitter.Api()
+
+        api = twitter.Api(consumer_key='a7znTIfGvUfDroKnCa7boQ',consumer_secret='drbSp9ufbZFC5xRqfofOsXaz3bCpWUXjHxOV1ou5nHY',access_token_key='127806337-uJ2sywW1Ypg3zkqMrK6JBK16rfCSpReH9SeuxaDH',access_token_secret='YohCKdw9s8WaYofhrQWBxLfhAC0RXsUJUbx8PekOEI')
+
+        #Post update to twitter
+        status = api.PostUpdate(tweet)
+
+        return
+
+
+obj = RandomTweet()
+
+tweet = obj.generate()
+obj.post_to_twitter(tweet)
 
 
